@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Decks</title>
+</head>
+
+<body>
+  <p>Decks</p>
+  <p>{{ name }}</p>
+  <p>{{ description }}</p>
+    <ul>
+      {% for deck in decks %}
+      <li>{{ deck[0] }}</li>
+      {% endfor %}
+    </ul>
+
+</body>
+
+</html>

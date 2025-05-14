@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>FlashWizard</title>
+</head>
+
+<body>
+  <h1>FlashWizard</h1>
+    <a href="create"> Create </a>
+    <p></p>
+    <a href="decks"> All decks </a>
+    <p>
+        Number of decks: {{ count }}
+    </p>
+    <hr />
+    {% for deck in decks %}
+    <p>
+      {{ deck[0] }}
+    </p>
+    <hr />
+</body>
+
+</html>
