@@ -10,14 +10,14 @@
     <a href="create"> Create </a>
     <p></p>
     <a href="decks"> All decks </a>
-    <p>
-        Number of decks: {{ count }}
-    </p>
     <hr />
-    {% for deck in decks %}
-    <p>
-      {{ deck[0] }}
-    </p>
+    <p>{{ name }}</p>
+    <p>{{ description }}</p>
+      <ul>
+        {% for deck in decks %}
+          <li>{{ deck[0] }}</li>
+        {% endfor %}
+      </ul>
     <hr />
 </body>
 

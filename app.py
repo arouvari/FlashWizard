@@ -4,22 +4,17 @@ import sqlite3
 
 app = Flask(__name__)
 
-@app.route("/")
+@app.route("/", methods=["POST"])
 def index():
+    name = request.form["name"]
+    description = request.form["description"]
+    tags = request.form.getlist("tags[]")
     db = sqlite3.connect("database.db")
-    decks = db.execute("SELECT name, description FROM decks").fetchall
+    db.execute("INSERT INTO decks (name, description) VALUES (?, ?)", (name, description))
+    db.commit()
     db.close()
-    return render_template("index.html", decks=decks)
+    return render_template("index.html", name=name, description=description, tags=tags)
 
 @app.route("/create")
 def create():
     return render_template("create.html")
-
-@app.route("/decks", methods=["POST"])
-def decks():
-    name = request.form["name"]
-    description = request.form["description"]
-    tags = request.form.getlist("tags")
-    db = sqlite3.connect("database.db")
-    db.execute("INSERT INTO decks (name, description) VALUES (?)", [name], [description])
-    return render_template("decks.html", name=name, description=description, tags=tags)
