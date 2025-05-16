@@ -12,10 +12,20 @@
   <h2>All decks</h2>
   <ul>
     {% for deck in decks %}
-    <li>
+  <li>
       {{ deck.name }}: {{ deck.description }} (Tags: {{ deck.tags or "" }})
-      <a href="/deck/{{ deck.id }}/study">Study</a>
-    </li>
+      <form action="/deck/{{ deck.id }}/study" style="display: inline;">
+        <button type="submit">Study</button>
+      </form>
+    {% if deck.user_id == session.user_id %}
+      <form action="/deck/{{ deck.id }}/edit" style="display: inline;">
+        <button type="submit">Edit</button>
+      </form>
+      <form action="/deck/{{ deck.id }}/delete" method="POST" style="display: inline;">
+        <button type="submit">Delete</button>
+      </form>
+    {% endif %}
+  </li>
     {% endfor %}
   </ul>
 </body>

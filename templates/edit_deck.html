@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Deck</title>
+</head>
+<body>
+  <h1>Edit Deck</h1>
+  <form method="POST" action="/deck/{{ deck_id }}/edit">
+    <label>Name: <input name="name" value="{{ deck.name }}" required></label><br>
+    <label>Description: <textarea name="description">{{ deck.description }}</textarea></label><br>
+    <label>Tags:
+      {% for tag in ["Science", "Languages", "Art", "Math", "Computer Science", "Law"] %}
+        <input type="checkbox" name="tags" value="{{ tag }}"
+               {% if tag in deck.tags.split(",") %}checked{% endif %}> {{ tag }}
+      {% endfor %}
+    </label><br>
+    <button type="submit">Save Changes</button>
+  </form>
+</body>
+</html>

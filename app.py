@@ -9,7 +9,7 @@ app.secret_key = config.secret_key
 
 @app.route("/")
 def index():
-    decks = db.query("SELECT id, name, description, tags FROM decks")
+    decks = db.query("SELECT id, name, description, tags, user_id FROM decks")
     return render_template("index.html", decks=decks)
 
 @app.route("/register")
@@ -43,11 +43,14 @@ def login():
     if not username or not password:
         return "ERROR: Username or password missing"
 
-    sql = "SELECT password_hash FROM users WHERE username = ?"
-    password_hash = db.query(sql, [username])[0][0]
+    user = db.query("SELECT id, username, password_hash FROM users WHERE username = ?", [username])
+    if not user:
+        return "ERROR: Wrong username or password"
 
-    if check_password_hash(password_hash, password):
-        session["username"] = username
+    user_data = user[0]
+    if check_password_hash(user_data["password_hash"], password):
+        session["user_id"] = user_data["id"]
+        session["username"] = user_data["username"]
         return redirect("/")
     else:
         return "ERROR: Wrong username or password"
@@ -56,9 +59,6 @@ def login():
 def logout():
     del session["username"]
     return redirect("/")
-
-
-
 
 @app.route("/create", methods=["GET", "POST"])
 def create():
@@ -83,10 +83,14 @@ def create_cards(deck_id):
 
 @app.route("/send", methods=["POST"])
 def send():
+    if "user_id" not in session:
+        return redirect("/login")
+
     name = request.form["name"]
     description = request.form["description"]
     tags = ",".join(request.form.getlist("tags"))
-    result = db.execute("INSERT INTO decks (name, description, tags) VALUES (?, ?, ?)", [name, description, tags])
+    user_id = session["user_id"]
+    result = db.execute("INSERT INTO decks (name, description, tags, user_id) VALUES (?, ?, ?)", [name, description, tags, user_id])
     deck_id = result.lastrowid
     return redirect(f"/deck/{deck_id}/add-cards")
 
@@ -122,3 +126,55 @@ def study_action(deck_id):
         session["show_answer"] = not session["show_answer"]
 
     return redirect(f"/deck/{deck_id}/study")
+
+@app.route("/deck/<int:deck_id>/edit", methods=["GET", "POST"])
+def edit_deck(deck_id):
+    if "user_id" not in session:
+        return redirect("/login")
+
+    deck = db.query("SELECT * FROM decks WHERE id = ?", [deck_id])
+    if not deck or deck[0]["user_id"] != session["user_id"]:
+        return "Unauthorized", 403
+
+    if request.method == "GET":
+        return render_template("edit_deck.html", deck=deck[0], deck_id=deck_id)
+
+    name = request.form["name"]
+    description = request.form["description"]
+    tags = ",".join(request.form.getlist("tags"))
+    db.execute("UPDATE decks SET name=?, description=?, tags=? WHERE id=?",
+               [name, description, tags, deck_id])
+    return redirect("/")
+
+@app.route("/deck/<int:deck_id>/delete", methods=["POST"])
+def delete_deck(deck_id):
+    if "user_id" not in session:
+        return redirect("/login")
+
+    deck = db.query("SELECT user_id FROM decks WHERE id = ?", [deck_id])
+    if not deck or deck[0]["user_id"] != session["user_id"]:
+        return "Unauthorized", 403
+
+    db.execute("DELETE FROM flashcards WHERE deck_id = ?", [deck_id])
+    db.execute("DELETE FROM decks WHERE id = ?", [deck_id])
+    return redirect("/")
+
+@app.route("/deck/<int:deck_id>/manage")
+def manage_cards(deck_id):
+    flashcards = db.query("SELECT id, question, answer FROM flashcards WHERE deck_id = ?", [deck_id])
+    return render_template("manage_cards.html", flashcards=flashcards, deck_id=deck_id)
+
+@app.route("/flashcard/<int:card_id>/edit", methods=["POST"])
+def edit_flashcard(card_id):
+    question = request.form["question"]
+    answer = request.form["answer"]
+    db.execute("UPDATE flashcards SET question=?, answer=? WHERE id=?",
+               [question, answer, card_id])
+    deck_id = db.query("SELECT deck_id FROM flashcards WHERE id = ?", [card_id])[0]["deck_id"]
+    return redirect(f"/deck/{deck_id}/manage")
+
+@app.route("/flashcard/<int:card_id>/delete", methods=["POST"])
+def delete_flashcard(card_id):
+    deck_id = db.query("SELECT deck_id FROM flashcards WHERE id = ?", [card_id])[0]["deck_id"]
+    db.execute("DELETE FROM flashcards WHERE id = ?", [card_id])
+    return redirect(f"/deck/{deck_id}/manage")

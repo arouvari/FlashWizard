@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Manage Flashcards</title>
+</head>
+<body>
+  <h1>Manage Flashcards</h1>
+  <a href="/deck/{{ deck_id }}/add-cards">Add More Cards</a>
+  {% for card in flashcards %}
+    <div>
+      <form action="/flashcard/{{ card.id }}/edit" method="GET" style="display: inline;">
+        <input type="text" name="question" value="{{ card.question }}">
+        <input type="text" name="answer" value="{{ card.answer }}">
+        <button type="submit">Save</button>
+      </form>
+      <form action="/flashcard/{{ card.id }}/delete" method="POST" style="display: inline;">
+        <button type="submit">Delete</button>
+      </form>
+    </div>
+  {% endfor %}
+  <a href="/">Back to Home</a>
+</body>
+</html>
