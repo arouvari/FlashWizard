@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Flashcards</title>
+</head>
+<body>
+    <h1>Add Flashcards</h1>
+    <form method="POST" action="/deck/{{ deck_id }}/create-cards">
+        <input type="hidden" name="deck_id" value="{{ deck_id }}">
+        <input type="hidden" name="num_cards" value="{{ num_cards }}">
+        {% for i in range(num_cards) %}
+            <h3>Card {{ i + 1 }}</h3>
+            <label>Question: <input type="text" name="question_{{ i }}" required></label><br>
+            <label>Answer: <input type="text" name="answer_{{ i }}" required></label><br>
+        {% endfor %}
+        <button type="submit">Create Flashcards</button>
+    </form>
+</body>
+</html>

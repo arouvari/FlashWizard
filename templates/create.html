@@ -7,27 +7,18 @@
 
 <body>
     <h1>Create a Deck</h1>
-  <form action="/" method="post">
-
-    <p>
-      Deck name:
-      <input type="text" name="name" />
-    </p>
-    <p>
-        Description:
-        <input type="text" name="description" />
-      </p>
-      <p>Tags:</p>
-      <p>
-        <input type="checkbox" name="tags" value="Science" /> Science
-        <input type="checkbox" name="tags" value="Languages" /> Languages
-        <input type="checkbox" name="tags" value="Art" /> Art
-        <input type="checkbox" name="tags" value="Math" /> Math
-        <input type="checkbox" name="tags" value="Computer Science" /> Computer Science
-        <input type="checkbox" name="tags" value="Law" /> Law
-      </p>
-    <input type="submit" value="Create" />
+    <form method="POST" action="/send">
+        <label>Deck name: <input name="name" required></label><br>
+        <label>Description: <textarea name="description"></textarea></label><br>
+        <label>Tags:
+          <input type="checkbox" name="tags" value="Science" /> Science
+          <input type="checkbox" name="tags" value="Languages" /> Languages
+          <input type="checkbox" name="tags" value="Art" /> Art
+          <input type="checkbox" name="tags" value="Math" /> Math
+          <input type="checkbox" name="tags" value="Computer Science" /> Computer Science
+          <input type="checkbox" name="tags" value="Law" /> Law
+      </label><br>
+      <button type="submit">Create</button>
   </form>
 </body>
-
 </html>

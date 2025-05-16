@@ -7,18 +7,12 @@
 
 <body>
   <h1>FlashWizard</h1>
-    <a href="create"> Create </a>
-    <p></p>
-    <a href="decks"> All decks </a>
-    <hr />
-    <p>{{ name }}</p>
-    <p>{{ description }}</p>
-      <ul>
-        {% for deck in decks %}
-          <li>{{ deck[0] }}</li>
-        {% endfor %}
-      </ul>
-    <hr />
+  <a href="/create"> Create </a>
+  <h2>All decks</h2>
+  <ul>
+    {% for deck in decks %}
+        <li>{{ deck.name }}: {{ deck.description }} (Tags: {{ deck.tags or "" }})</li>
+    {% endfor %}
+  </ul>
 </body>
-
 </html>

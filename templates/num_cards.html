@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Flashcards</title>
+</head>
+<body>
+    <h1>Add Flashcards to Deck</h1>
+    <form method="POST" action="/deck/{{ deck_id }}/add-cards">
+        <label>Number of flashcards: <input type="number" name="num_cards" min="1" required></label>
+        <button type="submit">Next</button>
+    </form>
+</body>
+</html>
