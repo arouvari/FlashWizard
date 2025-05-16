@@ -8,10 +8,14 @@
 <body>
   <h1>FlashWizard</h1>
   <a href="/create"> Create </a>
+  <p><a href="/login">Login</a> | <a href="/register">Register</a></p>
   <h2>All decks</h2>
   <ul>
     {% for deck in decks %}
-        <li>{{ deck.name }}: {{ deck.description }} (Tags: {{ deck.tags or "" }})</li>
+    <li>
+      {{ deck.name }}: {{ deck.description }} (Tags: {{ deck.tags or "" }})
+      <a href="/deck/{{ deck.id }}/study">Study</a>
+    </li>
     {% endfor %}
   </ul>
 </body>

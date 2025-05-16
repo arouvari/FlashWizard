@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Study Mode</title>
+</head>
+<body>
+    <h1>Studying Deck #{{ deck_id }}</h1>
+    <p>Card {{ current_index }} of {{ total_cards }}</p>
+
+    <div style="border: 1px solid black; padding: 20px; margin: 10px;">
+        {% if show_answer %}
+            <h2>Answer</h2>
+            {{ card['answer'] }}
+        {% else %}
+            <h2>Question</h2>
+            {{ card['question'] }}
+        {% endif %}
+    </div>
+
+    <form method="POST" action="/deck/{{ deck_id }}/study/action">
+        <button type="submit" name="action" value="prev" {% if current_index == 1 %}disabled{% endif %}>
+            Previous
+        </button>
+        <button type="submit" name="action" value="flip">
+            {% if show_answer %}Show Question{% else %}Show Answer{% endif %}
+        </button>
+        <button type="submit" name="action" value="next" {% if current_index == total_cards %}disabled{% endif %}>
+            Next
+        </button>
+    </form>
+
+    <a href="/">Back to Home</a>
+</body>
+</html>
